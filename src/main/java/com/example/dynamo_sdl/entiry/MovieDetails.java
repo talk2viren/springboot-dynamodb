@@ -32,6 +32,19 @@ public class MovieDetails {
         this.language = language;
     }
 
+    @Override
+    public String toString() {
+        return "MovieDetails{" +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                ", year='" + year + '\'' +
+                ", genre='" + genre + '\'' +
+                ", country='" + country + '\'' +
+                ", duration='" + duration + '\'' +
+                ", language='" + language + '\'' +
+                '}';
+    }
+
     @DynamoDbPartitionKey
     @DynamoDbAttribute("id")
     public String getId() {

@@ -2,6 +2,7 @@ package com.example.dynamo_sdl;
 
 import com.example.dynamo_sdl.entiry.Customer;
 import com.example.dynamo_sdl.entiry.MovieDetails;
+import com.example.dynamo_sdl.util.DB;
 import io.awspring.cloud.dynamodb.DynamoDbTemplate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,7 +58,7 @@ public class AWSRef {
     public void test_2() {
 //        getDynamoDBItem(dynamoDbClient, "Customers", "2", "2005");
 //        queryDynamoDBWithPartitionKey(dynamoDbClient, "Customers", "customerId", "2");
-        queryDynamoDBWithPartitionKey(dynamoDbClient, "Employee", "LoginAlias", "viren");
+          DB.queryDynamoDBWithPartitionKey(dynamoDbClient, "Employee", "LoginAlias", "viren");
     }
 
     //    viren : working create and edit
@@ -170,41 +171,8 @@ public class AWSRef {
         }
     }
 
-    public static void queryDynamoDBWithPartitionKey(DynamoDbClient ddb, String tableName, String
-            partitionKeyName, String partitionKeyValue) {
-        // Construct the query parameters using the partition key value
-        HashMap<String, AttributeValue> keyToGet = new HashMap<>();
-        keyToGet.put(":" + partitionKeyName, AttributeValue.builder().s(partitionKeyValue).build());
-        // Build the QueryRequest with the key condition expression
-        QueryRequest request = QueryRequest.builder().tableName(tableName).keyConditionExpression(partitionKeyName + " = :" + partitionKeyName).expressionAttributeValues(keyToGet).build();
-        try { // Execute the query and get the response
-            QueryResponse response = ddb.query(request);
-            List<Map<String, AttributeValue>> items = response.items();
-            if (items.isEmpty()) {
-                System.out.format("No item found with the partition key %s: %s\n", partitionKeyName, partitionKeyValue);
-            } else {
-                System.out.println("Amazon DynamoDB table attributes: \n");
-                for (Map<String, AttributeValue> item : items) {
-                    Set<String> keys = item.keySet();
-                    for (String key : keys) {
-                        System.out.format("%s: %s\n", key, item.get(key).toString());
-                    }
-                }
-            }
-        } catch (DynamoDbException e) {
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
-    }
 
 
-    @Test
-    void test_movie_01(){
-//        MovieDetails movieDetails=new MovieDetails();
-        MovieDetails movieDetails=new MovieDetails("one","two","three","four","five","six","siz");
-        template.save(movieDetails);
-
-    }
 }
 
 
