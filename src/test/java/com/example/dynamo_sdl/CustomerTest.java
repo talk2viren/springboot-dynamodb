@@ -36,7 +36,7 @@ public class CustomerTest {
 
     @BeforeEach
     void init() {
-        customer = new Customer("8", "2003");
+//        customer = new Customer("8", "2003");
 
     }
 

@@ -7,8 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
+import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.enhanced.dynamodb.model.CreateTableEnhancedRequest;
+import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
+import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
+import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 @SpringBootTest
@@ -50,6 +54,22 @@ public class MovieDetailsTest {
     void test_4() {
         dynamoDbTemplate.scanAll(MovieDetails.class).iterator().next().items().stream().forEach(System.out::println);
     }
+
+    @Test
+    void test_5(){
+        QueryEnhancedRequest one = QueryEnhancedRequest.builder().queryConditional(QueryConditional.keyEqualTo(Key.builder().partitionValue("one").build())).build();
+//        System.out.println(one.attributesToProject());
+        PageIterable<MovieDetails> query = dynamoDbTemplate.query(one, MovieDetails.class);
+        query.iterator().next().items().stream().forEach(System.out::println);
+    }
+
+
+    @Test
+    void test_6(){
+        PageIterable<MovieDetails> query = dynamoDbTemplate.scanAll(MovieDetails.class);
+        query.iterator().next().items().stream().forEach(System.out::println);
+    }
+
 
     private static class Util {
         private static void createTable(DynamoDbEnhancedClient enhancedClient) {

@@ -27,7 +27,7 @@ public class DynamoConfig {
     public DynamoDbClient dynamoDbClient() {
         return DynamoDbClient.builder()
                 .httpClientBuilder(UrlConnectionHttpClient.builder())
-//                .endpointOverride(URI.create("http://localhost:8000"))
+                .endpointOverride(URI.create("http://localhost:8000"))
                 .region(Region.US_EAST_1) // You can choose any valid region
                 .build();
     }
