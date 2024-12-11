@@ -5,6 +5,7 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbParti
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
 
 @DynamoDbBean
+
 //@Data
 public class Employee {
 
@@ -19,6 +20,16 @@ public class Employee {
         this.loginAlias = loginAlias;
         this.name = name;
         this.lastName = lastName;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "loginAlias='" + loginAlias + '\'' +
+                ", name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                '}';
     }
 
     @DynamoDbPartitionKey

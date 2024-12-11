@@ -1,10 +1,7 @@
 package com.example.dynamo_sdl.util;
 
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
-import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
-import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
-import software.amazon.awssdk.services.dynamodb.model.QueryRequest;
-import software.amazon.awssdk.services.dynamodb.model.QueryResponse;
+import software.amazon.awssdk.services.dynamodb.model.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -39,5 +36,37 @@ public class DB {
             System.exit(1);
         }
     }
+
+    public static void getDynamoDBItem(DynamoDbClient ddb, String tableName, String key, String keyVal) {
+        HashMap<String, AttributeValue> keyToGet = new HashMap<>();
+        keyToGet.put(key, AttributeValue.builder()
+                .s(keyVal)
+                .build());
+
+        GetItemRequest request = GetItemRequest.builder()
+                .key(keyToGet)
+                .tableName(tableName)
+                .build();
+
+        try {
+            // If there is no matching item, GetItem does not return any data.
+            Map<String, AttributeValue> returnedItem = ddb.getItem(request).item();
+            if (returnedItem.isEmpty())
+                System.out.format("No item found with the key %s!\n", key);
+            else {
+                Set<String> keys = returnedItem.keySet();
+                System.out.println("Amazon DynamoDB table attributes: \n");
+                for (String key1 : keys) {
+                    System.out.format("%s: %s\n", key1, returnedItem.get(key1).toString());
+                }
+            }
+
+        } catch (DynamoDbException e) {
+//            System.err.println(e.getMessage());
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
 
 }

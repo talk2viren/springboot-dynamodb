@@ -1,8 +1,9 @@
 package com.example.dynamo_sdl;
 
-import com.example.dynamo_sdl.entiry.Customer;
+import com.example.dynamo_sdl.entiry.Customers;
 import com.example.dynamo_sdl.entiry.Employee;
 import com.example.dynamo_sdl.entiry.GenericItem;
+import com.example.dynamo_sdl.entiry.MovieDetails;
 import io.awspring.cloud.dynamodb.DynamoDbTemplate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
+import software.amazon.awssdk.enhanced.dynamodb.model.CreateTableEnhancedRequest;
 import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
@@ -19,8 +21,11 @@ import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.example.dynamo_sdl.CustomersEntityTest.CustomerUtil.createTable;
+
+
 @SpringBootTest
-public class CustomerTest {
+public class CustomersEntityTest {
 
     @Autowired
     private DynamoDbTemplate template;
@@ -32,12 +37,17 @@ public class CustomerTest {
     private DynamoDbEnhancedClient dynamoDbEnhancedClient;
 
 
-    private Customer customer;
+    private Customers customers;
 
     @BeforeEach
     void init() {
 //        customer = new Customer("8", "2003");
 
+    }
+
+    @Test
+    void createTable_test(){
+        createTable(dynamoDbEnhancedClient);
     }
 
 
@@ -52,13 +62,13 @@ public class CustomerTest {
 
     @Test
     public void test_2() {
-        template.save(customer);
+        template.save(customers);
     }
 
     @Test
     void test_3() {
         String loginAlias = "johns";
-        DynamoDbTable<Customer> table = dynamoDbEnhancedClient.table("Customer", TableSchema.fromBean(Customer.class));
+        DynamoDbTable<Customers> table = dynamoDbEnhancedClient.table("Customer", TableSchema.fromBean(Customers.class));
         QueryConditional queryConditional = QueryConditional
                 .keyEqualTo(k -> k.partitionValue(loginAlias));
 
@@ -73,8 +83,8 @@ public class CustomerTest {
     @Test
     void test_4() {
         System.out.println("Dynamodb Client");
-        DynamoDbTable<Customer> table = dynamoDbEnhancedClient.table("Customer", TableSchema.fromBean(Customer.class));
-        Customer item = table.getItem(Key.builder()
+        DynamoDbTable<Customers> table = dynamoDbEnhancedClient.table("Customer", TableSchema.fromBean(Customers.class));
+        Customers item = table.getItem(Key.builder()
                 .partitionValue("1")
                 .build());
         System.out.println(item);
@@ -89,7 +99,7 @@ public class CustomerTest {
         collect.stream().forEach(System.out::println);
     }
 
-@Test
+    @Test
     public void test_5(){
         this.queryTableAsGenericItem("Employee","LoginAlias","viren");
     }
@@ -105,4 +115,22 @@ public class CustomerTest {
             e.printStackTrace();
         }
     }
+
+    public static class CustomerUtil {
+
+        private static void scanAllCustomers(DynamoDbEnhancedClient enhancedClient) {
+            DynamoDbTable<Customers> customerTable = enhancedClient.table("Customer", TableSchema.fromBean(Customers.class)); // Perform the scan operation
+            List<Customers> customers = customerTable.scan().items().stream().collect(Collectors.toList()); // Print the results for verification
+            customers.forEach(customer -> System.out.println(customer.getCustomerId() + " - " + customer.getDate()));
+        }
+
+        protected static void createTable(DynamoDbEnhancedClient enhancedClient) {
+            DynamoDbTable<Customers> customers = enhancedClient.table("Customers", TableSchema.fromBean(Customers.class)); // Create the table
+            customers.createTable(CreateTableEnhancedRequest.builder().build());
+            System.out.println("Table created successfully.");
+        }
+
+
+    }
+
 }

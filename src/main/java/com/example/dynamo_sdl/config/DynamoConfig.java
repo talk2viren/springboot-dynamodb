@@ -32,15 +32,15 @@ public class DynamoConfig {
                 .build();
     }
 
-//    @Bean
-//    public DynamoDbEnhancedClient dynamoDbEnhancedClient(DynamoDbClient dynamoDbClient) {
-//        return DynamoDbEnhancedClient.builder().dynamoDbClient(dynamoDbClient).build();
-//    }
-//
-//    @Bean
-//    public DynamoDbTemplate dynamoDbTemplate(DynamoDbEnhancedClient dynamoDbEnhancedClient) {
-//        return new DynamoDbTemplate(dynamoDbEnhancedClient);
-//    }
+ /*   @Bean
+    public DynamoDbEnhancedClient dynamoDbEnhancedClient(DynamoDbClient dynamoDbClient) {
+        return DynamoDbEnhancedClient.builder().dynamoDbClient(dynamoDbClient).build();
+    }
+
+    @Bean
+    public DynamoDbTemplate dynamoDbTemplate(DynamoDbEnhancedClient dynamoDbEnhancedClient) {
+        return new DynamoDbTemplate(dynamoDbEnhancedClient);
+    }*/
 
 
     @Bean

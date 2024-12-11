@@ -1,6 +1,6 @@
 package com.example.dynamo_sdl;
 
-import com.example.dynamo_sdl.entiry.Customer;
+import com.example.dynamo_sdl.entiry.Customers;
 import com.example.dynamo_sdl.entiry.Employee;
 import io.awspring.cloud.dynamodb.DynamoDbTemplate;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,7 +70,7 @@ class AppTests {
     @Test
     void test_3() {
         String loginAlias = "one";
-        DynamoDbTable<Customer> table = dynamoDbEnhancedClient.table("Customer", TableSchema.fromBean(Customer.class));
+        DynamoDbTable<Customers> table = dynamoDbEnhancedClient.table("Customer", TableSchema.fromBean(Customers.class));
         QueryConditional queryConditional = QueryConditional
                 .keyEqualTo(k -> k.partitionValue(loginAlias));
 
@@ -85,7 +85,7 @@ class AppTests {
     void test_4() {
         String LoginAlias = "two";
         // Ensure the table schema matches exactly with the Java POJO
-        DynamoDbTable<Customer> table = dynamoDbEnhancedClient.table("Customer", TableSchema.fromBean(Customer.class));
+        DynamoDbTable<Customers> table = dynamoDbEnhancedClient.table("Customer", TableSchema.fromBean(Customers.class));
         // Create a query conditional using the partition key (LoginAlias)
         QueryConditional queryConditional = QueryConditional.keyEqualTo(k -> k.partitionValue(LoginAlias));
         // Perform the query and collect results

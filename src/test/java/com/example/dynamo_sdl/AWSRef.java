@@ -1,6 +1,6 @@
 package com.example.dynamo_sdl;
 
-import com.example.dynamo_sdl.entiry.Customer;
+import com.example.dynamo_sdl.entiry.Customers;
 import com.example.dynamo_sdl.entiry.MovieDetails;
 import com.example.dynamo_sdl.util.DB;
 import io.awspring.cloud.dynamodb.DynamoDbTemplate;
@@ -35,11 +35,11 @@ public class AWSRef {
     private DynamoDbEnhancedClient dynamoDbEnhancedClient;
 
 
-    private Customer customer;
+    private Customers customers;
 
     @BeforeEach
     void init() {
-        customer = new Customer("8", "2003");
+        customers = new Customers("8", "2003");
 
     }
 
@@ -52,12 +52,6 @@ public class AWSRef {
                 .forEach(System.out::println);
     }
 
-    @Test
-    public void test_2() {
-//        getDynamoDBItem(dynamoDbClient, "Customers", "2", "2005");
-//        queryDynamoDBWithPartitionKey(dynamoDbClient, "Customers", "customerId", "2");
-        DB.queryDynamoDBWithPartitionKey(dynamoDbClient, "Employee", "LoginAlias", "viren");
-    }
 
     //    viren : working create and edit
 
@@ -75,7 +69,7 @@ public class AWSRef {
 //        createTable(enhancedClient);
 //        scanAllCustomers(enhancedClient);
 
-        Customer customer1 = new Customer("12345", "2024-12-08");
+        Customers customers1 = new Customers("12345", "2024-12-08");
 
 //        template.save(customer1);
 //        PageIterable<Customer> pages = template.scanAll(Customer.class);
@@ -109,9 +103,9 @@ public class AWSRef {
 //        PageIterable<Customer> pages = template.scanAll(Customer.class);
 //        System.out.println(pages.iterator().next());
 
-        Customer one = template.load(Key.builder()
+        Customers one = template.load(Key.builder()
                 .partitionValue("one")
-                .build(), Customer.class);
+                .build(), Customers.class);
         System.out.println(one);
 
 
@@ -120,8 +114,8 @@ public class AWSRef {
     @Test
     void test_9() {
 //        template.load(Customer.class, "one", "someDate");
-        Customer customer1 = new Customer("12345", "2024-12-08");
-        template.save(customer1);
+        Customers customers1 = new Customers("12345", "2024-12-08");
+        template.save(customers1);
     }
 
 //    Throwing Index out of bound exception
@@ -139,18 +133,18 @@ public class AWSRef {
 //        Map<String, Object> stringObjectMap = Util.convertAttributeValueMap(map);
         Map<String, Object> stringObjectMap = AttributeValueConverter.convertAttributeValueMap(map);
 
-        Customer customer1 = new Customer("cust_1", "2024", stringObjectMap);
-        template.save(customer1);
+        Customers customers1 = new Customers("cust_1", "2024", stringObjectMap);
+        template.save(customers1);
 
 
     }
 
 
-    public interface Util {
+    private interface Util {
 
         private static void scanAllCustomers(DynamoDbEnhancedClient enhancedClient) {
-            DynamoDbTable<Customer> customerTable = enhancedClient.table("Customer", TableSchema.fromBean(Customer.class)); // Perform the scan operation
-            List<Customer> customers = customerTable.scan().items().stream().collect(Collectors.toList()); // Print the results for verification
+            DynamoDbTable<Customers> customerTable = enhancedClient.table("Customer", TableSchema.fromBean(Customers.class)); // Perform the scan operation
+            List<Customers> customers = customerTable.scan().items().stream().collect(Collectors.toList()); // Print the results for verification
             customers.forEach(customer -> System.out.println(customer.getCustomerId() + " - " + customer.getDate()));
         }
 
@@ -162,36 +156,6 @@ public class AWSRef {
         }
 
 
-        public static void getDynamoDBItem(DynamoDbClient ddb, String tableName, String key, String keyVal) {
-            HashMap<String, AttributeValue> keyToGet = new HashMap<>();
-            keyToGet.put(key, AttributeValue.builder()
-                    .s(keyVal)
-                    .build());
-
-            GetItemRequest request = GetItemRequest.builder()
-                    .key(keyToGet)
-                    .tableName(tableName)
-                    .build();
-
-            try {
-                // If there is no matching item, GetItem does not return any data.
-                Map<String, AttributeValue> returnedItem = ddb.getItem(request).item();
-                if (returnedItem.isEmpty())
-                    System.out.format("No item found with the key %s!\n", key);
-                else {
-                    Set<String> keys = returnedItem.keySet();
-                    System.out.println("Amazon DynamoDB table attributes: \n");
-                    for (String key1 : keys) {
-                        System.out.format("%s: %s\n", key1, returnedItem.get(key1).toString());
-                    }
-                }
-
-            } catch (DynamoDbException e) {
-//            System.err.println(e.getMessage());
-                e.printStackTrace();
-                System.exit(1);
-            }
-        }
 
     }
 
