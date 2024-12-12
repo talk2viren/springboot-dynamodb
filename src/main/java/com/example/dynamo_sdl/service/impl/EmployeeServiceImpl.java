@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
+import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
-import software.amazon.awssdk.enhanced.dynamodb.model.Page;
 
 import java.util.List;
 
@@ -38,9 +38,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<Employee> getAllEmployees() {
-//        List<Page<Employee>> list = dynamoDbTable.scan().stream().toList();
-//        list.stream().
-        return null;
+        return dynamoDbTable.scan().stream()
+                .map(employeePage -> employeePage.items())
+                .flatMap(employees -> employees.stream())
+                .toList();
     }
 
     public Employee createEmployee(Employee employee){
@@ -51,12 +52,19 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<Employee> getEmployeeById(String empId) {
-        return List.of();
+    public Employee getEmployeeById(String empId,String sort) {
+        Employee employee = dynamoDbTable.getItem(Key.builder()
+                        .partitionValue(empId)
+                        .sortValue(sort)
+                .build());
+//        Employee employee = dynamoDbTable.getItem(emp -> emp.key(key -> key.partitionValue("viren")));
+        return employee;
+
     }
 
     @Override
     public List<Employee> getEmployeeByLastName(String empId) {
+
         return List.of();
     }
 
