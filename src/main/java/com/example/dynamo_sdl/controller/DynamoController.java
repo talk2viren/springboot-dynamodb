@@ -54,7 +54,7 @@ public class DynamoController {
     public ResponseEntity<?> getEmployee(@PathVariable String name){
         log.info("Put Employee >> "+name);
 //        Employee employee =new Employee("empId","virendra","yadav");
-
+        employeeService.getEmployeeByLastName(name);
         return ResponseEntity.ok(List.of("name1","name2"));
     }
 
