@@ -3,6 +3,7 @@ package com.example.dynamo_sdl.config;
 import io.awspring.cloud.dynamodb.DynamoDbTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 import software.amazon.awssdk.regions.Region;
@@ -24,6 +25,7 @@ public class DynamoConfig {
 
     // AI Version
     @Bean
+    @Lazy
     public DynamoDbClient dynamoDbClient() {
         return DynamoDbClient.builder()
                 .httpClientBuilder(UrlConnectionHttpClient.builder())
